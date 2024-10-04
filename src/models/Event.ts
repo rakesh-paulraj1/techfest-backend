@@ -1,7 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db";
 
-export class Event extends Model { }
+export class Event extends Model {
+    [x: string]: any;
+}
 Event.init(
     {
       event_id: {
@@ -13,31 +15,18 @@ Event.init(
         type: DataTypes.STRING,
         allowNull: false
       },
-      event_date:{
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-    event_time:{
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-    event_venue:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
     event_description:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    event_rules:{
         type: DataTypes.STRING,
         allowNull: false
     },
     event_image:{
       type: DataTypes.STRING,
       allowNull: false
-    }
     },
+    event_price:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }},
     {
       sequelize,
       modelName: "Event",

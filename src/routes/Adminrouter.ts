@@ -1,18 +1,16 @@
 import { Router } from "express";
 import { AdminController } from "../controllers/admin.controllers";
-
+import { EventController } from "../controllers/eventcontroller";
 
 
 const router=Router();
 const adminController=new AdminController();
+const eventcontroller=new EventController();
+router.post('/registeradmin',adminController.registeradmin);
 router.post('/adminlogin',adminController.loginadmin);
 router.use('/admin',adminController.adminmiddleware);
-router.post("/adminadd",adminController.createuser);
-router.get("/getalluser",adminController.getalluser);
-router.get("/allareas",adminController.getareas);
-router.get("/admincomplaints",adminController.getcomplaints);
-router.get("/admincomplaint/:id",adminController.getcomplaint);
-router.put("/admincomplaint/:id",adminController.updatecomplaint);
-router.get("/adminwasteproducedarea/:id",adminController.waste_byarea);
-router.get("/adminwasteproduceduser/:id",adminController.waste_byuser);
+router.post('/admin/createevents',adminController.createevents);
+router.delete('/admin/deleteevent/:event_id',eventcontroller.deleteevent);
+router.post('/adminlogout',adminController.adminlogout);
 export default router;
+ 

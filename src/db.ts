@@ -7,7 +7,7 @@ dotenv.config({path: path.join(__dirname, "../.env")});
 export const sequelize = new Sequelize(
   process.env.DBNAME || "",
   process.env.DBUSER || "",
-  process.env.PASSWORD || "",
+  process.env.DBPASSWORD || "",
   {
     host: process.env.DBHOST,
     dialect: "mysql",

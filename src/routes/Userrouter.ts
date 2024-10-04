@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { Usercontroller } from "../controllers/student.controller";
+
+import { EventController } from "../controllers/eventcontroller";
+
 
 const router=Router();
-const usercontroller=new Usercontroller();
-router.post('/userlogin',usercontroller.loginuser);
-router.use('/user',usercontroller.usermiddleware);
-router.post('/addwaste',usercontroller.wasteinput);
-router.post("/createcomplaint",usercontroller.createcomplaint);
-router.get("/complaints/:id",usercontroller.yourcomplaints);
+
+const eventController=new EventController();
+
+router.get('/getallevents',eventController.getallevents);
+
 export default router;

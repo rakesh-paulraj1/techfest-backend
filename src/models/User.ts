@@ -41,34 +41,6 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    event_id:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    event_name:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    event_date:{
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-    event_time:{
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-    event_venue:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    event_description:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    event_rules:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
    
 },{
     sequelize,
