@@ -7,6 +7,7 @@ import {Event} from "./models/Event";
 import { Admin } from "./models/Admin";
 import AdminRouter  from "./routes/Adminrouter";
 import UserRouter from "./routes/Userrouter";
+import { EventRegistration } from "./models/EventRegistration";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(cors({
 User.sync()
 Event.sync()
 Admin.sync()
+EventRegistration.sync()
 
 
   .then(() => console.log("All models synced with the database"))
