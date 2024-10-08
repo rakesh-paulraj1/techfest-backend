@@ -81,19 +81,19 @@ export class AdminController {
                 const { event_name, event_description, event_price } = req.body;
                 const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-                if (!files || !files['event_image'] || !files['qr_image']) {
-                    return res.status(400).json({ error: 'Both event image and QR image are required' });
+                if (!files['event_image'] ) {
+                    return res.status(400).json({ error: ' event  image are required' });
                 }
 
                 const event_image = files['event_image'][0].filename;  
-                const qr_image = files['qr_image'][0].filename;        
+                const event_qr = files['qr_image'][0].filename;        
 
                 const event = await Event.create({
                     event_name,
                     event_description,
                     event_price,
                     event_image,
-                    event_qr: qr_image  
+                    event_qr 
                 });
 
                 res.status(200).json({
@@ -131,14 +131,11 @@ export class AdminController {
             const adminid = admin.getDataValue('id');
             const token=sign({ id: adminid }, JWT_SECRET!);
             res.cookie("token",token,{
-                httpOnly: true,         
-                secure: false,         
-                sameSite: 'lax'         
+                httpOnly: false,  
+                secure: false,    
+                sameSite: 'none'         
             });
-            res.status(200).json({
-                message: "Admin Registered Successfully",
-              
-            })
+            
         } catch (err) {
             console.error(err);
             res.status(500).json({
@@ -146,8 +143,6 @@ export class AdminController {
             })
         }
     }     
-    
-
     //----------------------------------------------//
     public async loginadmin(req: Request, res: Response): Promise<void> {
         try {
@@ -157,7 +152,7 @@ export class AdminController {
             const admin = await Admin.findOne({ where: { email: data.email } });
             if (!admin) {
                 res.status(403).json({
-                    err: "Invalid username or password"
+                    err: "Invalid email or password"
                 });
                 return;
             }
@@ -166,27 +161,27 @@ export class AdminController {
             const isMatch = await bcrypt.compare(password, adminpassword);
          
             if (isMatch) {
+               
                 const token = sign(
                     { id: adminid, role: 'admin' }, 
                     JWT_SECRET! 
                 );
-            
-               
+                
                 res.cookie("token", token, {
-                    httpOnly: true,   
-                    secure: true,   
-                    sameSite: 'lax'   
-                });
+                    httpOnly: true,
+                    secure: false,  
+                    sameSite: 'lax' 
+                  });
             
-              
-                res.status(200).json({
-                    message: "Login successful",
-                    role: 'admin',
+            
+            res.status(200).json({
+                    message: "admin",
                 });
+             
             } else {
              
                 res.status(403).json({
-                    err: "Invalid username or password"
+                    err: "Invalid email or password"
                 });
             }
             
@@ -238,6 +233,46 @@ public async registrationdetails(req: Request, res: Response): Promise<void> {
         console.error(err);
         res.status(500).json({
             err: "Unable to get admin details"
+        });
+    }
+}
+//---------------------------//
+public async verifyeventregistration(req:Request,res:Response):Promise<void>{
+    try{
+        const {user_id,event_id,event_verification}=req.body;
+        const user = await User.findByPk(user_id);
+        if(!user){
+            res.status(404).json({
+                err:"User not found"
+            });
+            return;
+        }
+        if(event_verification=='verified'){ const changedstatus=await EventRegistration.update({
+            verification_status:'verified'
+        },{
+            where:{
+                user_id,
+                event_id
+            }
+        });}
+        else if(event_verification=='rejected'){
+            const changedstatus=await EventRegistration.update({
+                verification_status:'rejected'
+            },{
+                where:{
+                    user_id,
+                    event_id
+                }
+            });
+        }
+        res.status(200).json({
+            message:"Event registration verified"
+        });
+       
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            err:"Unable to get user"
         });
     }
 }

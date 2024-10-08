@@ -37,6 +37,10 @@ EventRegistration.init(
                 key: 'user_id'
             },
             allowNull: false
+        },verification_status: {
+            type: DataTypes.ENUM('verified', 'pending', 'rejected'), 
+            defaultValue: 'pending',
+            allowNull: false
         }
     },
     {

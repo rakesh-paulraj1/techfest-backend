@@ -90,13 +90,13 @@ public async deleteevent(req:Request,res:Response):Promise<void>{
 
         const token = sign({ id: user.user_id, role:'user' }, JWT_SECRET!);
 
-        res.cookie("token",token,{
-            httpOnly: true,         
-            secure: false,         
-            sameSite: 'lax'         
-        });
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,  
+            sameSite: 'lax' 
+          });
         res.status(201).json({
-            message: 'User registered successfully',
+            message: 'user',
             role: 'user',
             userid: user.id,
         });
@@ -119,7 +119,6 @@ public async deleteevent(req:Request,res:Response):Promise<void>{
             return;
         }
         const userpassword = user.getDataValue('password');
-        const userid = user.getDataValue('id');
         const isMatch = await bcrypt.compare(password, userpassword);
      
         if (isMatch) {
@@ -130,21 +129,19 @@ public async deleteevent(req:Request,res:Response):Promise<void>{
         
            
             res.cookie("token", token, {
-                httpOnly: true,   
-                secure: true,   
-                sameSite: 'lax'   
-            });
+                httpOnly: true,
+                secure: false,  
+                sameSite: 'lax' 
+              });
         
-          
+        
             res.status(200).json({
-                message: "Login successful",
-                role: 'user',
-                userid: userid,
+                message: "user",
             });
         } else {
          
             res.status(403).json({
-                err: "Invalid username or password"
+                err: "Invalid email or password"
             });
         }
         
@@ -193,20 +190,24 @@ public async eventregistration(req: Request & { user?: any }, res: Response): Pr
                 res.status(401).json({ error: "User not authenticated" });
                 return;
             }
+
             const eventRegistration = await EventRegistration.create({
                 user_id: userid,
                 event_id: event_id,
                 transaction_id: transaction_id,
-                upi_id: upi_id
+                upi_id: upi_id,
+                verification_status: "pending",
             });
             res.status(200).json({
-                message: "Event registered successfully",
+                message: "success",
                 eventRegistration
             });
         }
         catch (error) {
+            console.log(error);
             res.status(401).json({
-                err: "Unable to create events server error"
+                err: "Unable to register event"
+               
             });
         }
 }//---------------------------//
@@ -230,8 +231,17 @@ public async getregisterdevents(req: Request & { user?: any }, res: Response): P
                 },
             ],
         });
+        const eventswithimageurls = eventregistrations.map((registration: any) => ({
+            ...registration.dataValues,
+            Event: {
+                ...registration.Event.dataValues,
+                event_image: `http://localhost:3000/${registration.Event.event_image}`,
+                event_qr: `http://localhost:3000/${registration.Event.event_qr}`,
+            },
+        }));
         res.status(200).json({
-            eventregistrations
+            message: "success",
+            eventswithimageurls
         });
     }
     catch (error) {

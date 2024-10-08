@@ -31,7 +31,7 @@ Event.init({
     },
     event_qr: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
 }, {
     sequelize,
