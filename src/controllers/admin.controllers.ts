@@ -78,7 +78,7 @@ export class AdminController {
                 return res.status(500).json({ error: 'Unknown error during file upload' });
             }
             try {
-                const { event_name, event_description, event_price } = req.body;
+                const { event_name, event_description, event_price,event_teamsize } = req.body;
                 const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
                 if (!files['event_image'] ) {
@@ -93,7 +93,8 @@ export class AdminController {
                     event_description,
                     event_price,
                     event_image,
-                    event_qr 
+                    event_qr ,
+                   event_teamsize
                 });
 
                 res.status(200).json({
@@ -179,7 +180,7 @@ export class AdminController {
                 });
              
             } else {
-             
+             console.log("Invalid email or password");
                 res.status(403).json({
                     err: "Invalid email or password"
                 });
@@ -217,12 +218,12 @@ public async registrationdetails(req: Request, res: Response): Promise<void> {
         const admin = await EventRegistration.findAll({
             include: [
                 {
-                    model: Event, // Include the Event model
-                    attributes: ['event_name'] // Select the event name
+                    model: Event, 
+                    attributes: ['event_name']
                 },
                 {
-                    model: User, // Include the User model
-                    attributes: ['email', 'username'] // Select the user email and username
+                    model: User, 
+                    attributes: ['email', 'username'] 
                 }
             ]
         });
@@ -284,6 +285,4 @@ public async adminlogout(req: Request, res: Response): Promise<void> {
     });
 }
 //---------------------------//
-
 }
-

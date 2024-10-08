@@ -2,11 +2,13 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db";
 
 export class Event extends Model {
+    static findById(eventId: string) {
+        throw new Error('Method not implemented.');
+    }
     event_id: any;
     event_image: any;
     event_qr: any;
 }
-
 Event.init({
     event_id: {
         type: DataTypes.INTEGER,
@@ -32,6 +34,10 @@ Event.init({
     event_qr: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    event_teamsize: {
+        type: DataTypes.INTEGER,
+        allowNull: false 
     }
 }, {
     sequelize,

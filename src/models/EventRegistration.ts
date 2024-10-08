@@ -22,6 +22,10 @@ EventRegistration.init(
             type: DataTypes.STRING,
             allowNull: false
         },
+        event_teamsize: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         event_id: {
             type: DataTypes.INTEGER,
             references: {

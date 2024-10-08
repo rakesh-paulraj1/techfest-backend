@@ -9,7 +9,7 @@ export class EventController {
     public async getallevents(req:Request,res:Response):Promise<void>{
         try{
             const events = await Event.findAll({
-                attributes: [ 'event_id', 'event_name', 'event_price', 'event_description', 'event_image','event_qr'],
+                attributes: [ 'event_id', 'event_name', 'event_price', 'event_description', 'event_image','event_qr','event_teamsize'],
               });
               const eventswithimageurls = events.map((event) => ({
                 ...event.dataValues,
@@ -134,12 +134,12 @@ public async deleteevent(req:Request,res:Response):Promise<void>{
                 sameSite: 'lax' 
               });
         
-        
+       
             res.status(200).json({
                 message: "user",
             });
         } else {
-         
+         console.log("Invalid email or password");
             res.status(403).json({
                 err: "Invalid email or password"
             });
@@ -159,7 +159,7 @@ public async usermiddleware(req: Request & { user?: any }, res: Response, next: 
         }
     try {
         const user = await verify(token, JWT_SECRET!) as { role: string };
-        console.log(user);
+       
         if (user.role === 'user') {
             req.user = user;
             await next();
@@ -175,9 +175,7 @@ public async usermiddleware(req: Request & { user?: any }, res: Response, next: 
     }
 }//---------------------------//
 public async eventregistration(req: Request & { user?: any }, res: Response): Promise<void> {
-    const { event_id, transaction_id, upi_id } = req.body;
-   
-   
+    const { event_id, transaction_id, upi_id,event_teamsize } = req.body;
     try {
          const event = await Event.findByPk(event_id);
             if (!event) {
@@ -185,9 +183,20 @@ public async eventregistration(req: Request & { user?: any }, res: Response): Pr
                 return;
             }
             const userid = req.user?.id;
-            console.log (userid);
+           
             if (!userid) {
                 res.status(401).json({ error: "User not authenticated" });
+                return;
+            }
+            const existingRegistration = await EventRegistration.findOne({
+                where: {
+                    user_id: userid,
+                    event_id: event_id
+                }
+            });
+    
+            if (existingRegistration) {
+                res.status(400).json({ error: "You have already registered for this event" });
                 return;
             }
 
@@ -196,6 +205,7 @@ public async eventregistration(req: Request & { user?: any }, res: Response): Pr
                 event_id: event_id,
                 transaction_id: transaction_id,
                 upi_id: upi_id,
+                event_teamsize: event_teamsize,
                 verification_status: "pending",
             });
             res.status(200).json({
@@ -210,10 +220,9 @@ public async eventregistration(req: Request & { user?: any }, res: Response): Pr
                
             });
         }
-}//---------------------------//
+}
+//------------------------------------------------//
 public async getregisterdevents(req: Request & { user?: any }, res: Response): Promise<void> {
- 
-  
     try {
         const userid = req.user?.id;
         if (!userid) {
