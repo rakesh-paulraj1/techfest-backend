@@ -13,8 +13,8 @@ export class EventController {
               });
               const eventswithimageurls = events.map((event) => ({
                 ...event.dataValues,
-                event_image: `http://localhost:3000/${event.event_image}`,
-                event_qr: `http://localhost:3000/${event.event_qr}`,
+                event_image: `${process.env.BACKENDURL}/${event.event_image}`,
+                event_qr: `${process.env.BACKENDURL}/${event.event_qr}`,
               }));
             res.status(200).json({
                 eventswithimageurls
@@ -244,8 +244,8 @@ public async getregisterdevents(req: Request & { user?: any }, res: Response): P
             ...registration.dataValues,
             Event: {
                 ...registration.Event.dataValues,
-                event_image: `http://localhost:3000/${registration.Event.event_image}`,
-                event_qr: `http://localhost:3000/${registration.Event.event_qr}`,
+                event_image: `${process.env.BACKENDURL}:3000/${registration.Event.event_image}`,
+                event_qr: `${process.env.BACKENDURL}:3000/${registration.Event.event_qr}`,
             },
         }));
         res.status(200).json({
