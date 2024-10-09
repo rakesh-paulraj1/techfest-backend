@@ -244,8 +244,8 @@ public async getregisterdevents(req: Request & { user?: any }, res: Response): P
             ...registration.dataValues,
             Event: {
                 ...registration.Event.dataValues,
-                event_image: `${process.env.BACKENDURL}:3000/${registration.Event.event_image}`,
-                event_qr: `${process.env.BACKENDURL}:3000/${registration.Event.event_qr}`,
+                event_image: `${process.env.BACKENDURL}/${registration.Event.event_image}`,
+                event_qr: `${process.env.BACKENDURL}/${registration.Event.event_qr}`,
             },
         }));
         res.status(200).json({
